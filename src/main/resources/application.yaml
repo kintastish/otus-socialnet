@@ -2,3 +2,15 @@ server:
   port: 8080
   servlet:
     contextPath: /api
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://mysql-host:3306/socialnetdb
+    username: db_user
+    password: db_pass_123
+
+settings:
+  secret-key: '1231231'
+  session-lifetime-minutes: 360
