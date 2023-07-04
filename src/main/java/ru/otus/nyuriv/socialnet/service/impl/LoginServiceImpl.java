@@ -13,6 +13,7 @@ import ru.otus.nyuriv.socialnet.model.User;
 import ru.otus.nyuriv.socialnet.service.LoginService;
 import ru.otus.nyuriv.socialnet.service.SessionService;
 import ru.otus.nyuriv.socialnet.service.UserService;
+import ru.otus.nyuriv.socialnet.util.PasswordUtil;
 
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
@@ -43,24 +44,13 @@ public class LoginServiceImpl implements LoginService {
         if (user == null) {
             throwUnauthorizedException(request.getId());
         }
-        String providedHash = getPasswordHash(request.getPassword());
+        String providedHash = PasswordUtil.hash(request.getPassword(), settings.getSecretKey());
         if (!Objects.equals(providedHash, user.getPasswordHash())) {
             throwUnauthorizedException(request.getId());
         }
         Session session = sessionService.createSession(user.getId());
         String token = session.getToken();
         return TokenResponse.of(token);
-    }
-
-    private String getPasswordHash(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] bytes = StandardCharsets.UTF_8.encode(CharBuffer.wrap(password)).array();
-            md.update(bytes);
-            return Base64Utils.encodeToString(md.digest(Base64Utils.decodeFromString(settings.getSecretKey())));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void throwUnauthorizedException(String userId) {
