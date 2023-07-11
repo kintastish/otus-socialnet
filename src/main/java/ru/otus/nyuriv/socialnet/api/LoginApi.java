@@ -21,6 +21,6 @@ public class LoginApi {
 
     @PostMapping
     public TokenResponse login(@RequestBody LoginRequest request) {
-        return new TokenResponse();
+        return loginService.login(request);
     }
 }

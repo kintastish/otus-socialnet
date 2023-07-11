@@ -5,5 +5,5 @@ import ru.otus.nyuriv.socialnet.model.LoginRequest;
 import ru.otus.nyuriv.socialnet.model.TokenResponse;
 
 public interface LoginService {
-    TokenResponse login(@RequestBody LoginRequest request);
+    TokenResponse login(LoginRequest request);
 }
