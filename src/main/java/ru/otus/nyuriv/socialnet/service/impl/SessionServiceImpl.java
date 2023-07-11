@@ -1,4 +1,4 @@
-package ru.otus.nyuriv.socialnet.service;
+package ru.otus.nyuriv.socialnet.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +7,7 @@ import ru.otus.nyuriv.socialnet.config.AppSettings;
 import ru.otus.nyuriv.socialnet.dao.SessionDao;
 import ru.otus.nyuriv.socialnet.gen.jooq.socialnetdb.tables.pojos.Sessions;
 import ru.otus.nyuriv.socialnet.model.Session;
+import ru.otus.nyuriv.socialnet.service.SessionService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
