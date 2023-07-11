@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.otus.nyuriv.socialnet.dao.UserProfileDao;
+import ru.otus.nyuriv.socialnet.exception.NotFoundException;
 import ru.otus.nyuriv.socialnet.gen.jooq.socialnetdb.tables.pojos.UserProfiles;
 import ru.otus.nyuriv.socialnet.model.UserProfileResponse;
 import ru.otus.nyuriv.socialnet.service.UserProfileService;
@@ -23,6 +24,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfileResponse getUserProfile(String userId) {
         UserProfiles profile = dao.getProfile(userId);
+        if (profile == null) {
+            throw new NotFoundException("User with id " + userId + " not found");
+        }
         return convert(profile);
     }
 

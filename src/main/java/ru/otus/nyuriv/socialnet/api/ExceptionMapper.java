@@ -21,6 +21,12 @@ public class ExceptionMapper {
         return makeResponseEntity(ex.getMessage(), ex.getErrorCode(), ex.getStatus());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.error("Caught exception", ex);
+        return makeResponseEntity(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleThrowable(Throwable th) {
         log.error("Caught unexpected error", th);

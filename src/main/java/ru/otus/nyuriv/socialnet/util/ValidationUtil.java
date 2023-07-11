@@ -7,7 +7,7 @@ import java.util.Map;
 public class ValidationUtil {
     public static void checkNotEmpty(Object o, String argName) {
         if (isEmpty(o)) {
-            throw new IllegalStateException(String.format("'%s' is empty", argName));
+            throw new IllegalArgumentException(String.format("'%s' is empty", argName));
         }
     }
 
