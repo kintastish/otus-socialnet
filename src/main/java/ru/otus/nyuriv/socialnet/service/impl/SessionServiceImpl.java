@@ -36,6 +36,9 @@ public class SessionServiceImpl implements SessionService {
         session.setStarted(now);
         session.setExpiring(now.plus(settings.getSessionLifetimeMinutes(), ChronoUnit.MINUTES));
         Sessions createdSession = sessionDao.createOrUpdateSession(session);
+        if (createdSession == null) {
+            throw new IllegalStateException("Session not created");
+        }
         return convert(createdSession);
     }
 

@@ -39,6 +39,9 @@ public class RegisteringServiceImpl implements RegisteringService {
             throw new BadRequestException("Wrong date");
         }
         UserProfiles profile = registerDao.createUserAndProfile(model);
+        if (profile == null) {
+            throw new IllegalStateException("Registration failed");
+        }
         return UserRegistrationResponse.of(profile.getId());
     }
 
