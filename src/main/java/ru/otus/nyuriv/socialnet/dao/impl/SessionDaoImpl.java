@@ -30,36 +30,46 @@ public class SessionDaoImpl implements SessionDao {
 
     @Override
     public Sessions createOrUpdateSession(Sessions session) {
-        AtomicReference<Sessions> res = new AtomicReference<>();
+        Sessions result = null;
         try (Connection conn = dataSource.getConnection()) {
             DSLContext dsl = DSL.using(conn, SQLDialect.MYSQL);
-            dsl.transaction(conf -> {
+            result = dsl.transactionResult(conf -> {
                 DSLContext ctx = DSL.using(conf);
-                List<Sessions> records = ctx.selectFrom(SESSIONS)
-                        .where(SESSIONS.USER_ID.eq(session.getUserId()))
-                        .fetchInto(Sessions.class);
-                if (records.isEmpty()) {
-                    Sessions inserted = ctx.insertInto(SESSIONS)
-                            .set(SESSIONS.USER_ID, session.getUserId())
-                            .set(SESSIONS.SESSION_ID, session.getSessionId())
-                            .set(SESSIONS.STARTED, session.getStarted())
-                            .set(SESSIONS.EXPIRING, session.getExpiring())
-                            .returning(SESSIONS.asterisk())
-                            .fetchOneInto(Sessions.class);
-                    res.set(inserted);
+                Sessions record = getUserSession(ctx, session.getUserId());
+                if (record == null) {
+                    checkExecutionResult(
+                            ctx.insertInto(SESSIONS)
+                                    .set(SESSIONS.USER_ID, session.getUserId())
+                                    .set(SESSIONS.SESSION_ID, session.getSessionId())
+                                    .set(SESSIONS.STARTED, session.getStarted())
+                                    .set(SESSIONS.EXPIRING, session.getExpiring())
+                                    .execute()
+                    );
                 } else {
-                    Sessions updated = ctx.update(SESSIONS)
-                            .set(SESSIONS.SESSION_ID, session.getSessionId())
-                            .set(SESSIONS.STARTED, session.getStarted())
-                            .set(SESSIONS.EXPIRING, session.getExpiring())
-                            .returning(SESSIONS.asterisk())
-                            .fetchOneInto(Sessions.class);
-                    res.set(updated);
+                    checkExecutionResult(
+                            ctx.update(SESSIONS)
+                                    .set(SESSIONS.SESSION_ID, session.getSessionId())
+                                    .set(SESSIONS.STARTED, session.getStarted())
+                                    .set(SESSIONS.EXPIRING, session.getExpiring())
+                                    .execute());
                 }
+                return getUserSession(ctx, session.getUserId());
             });
         } catch (Exception e) {
             log.error("Session getting error, user_id: {}", session, e);
         }
-        return res.get();
+        return result;
+    }
+
+    private Sessions getUserSession(DSLContext ctx, String userId) {
+        return ctx.selectFrom(SESSIONS)
+                .where(SESSIONS.USER_ID.eq(userId))
+                .fetchOneInto(Sessions.class);
+    }
+
+    private void checkExecutionResult(int count) {
+        if (count != 1) {
+            throw new IllegalStateException("Query execution error");
+        }
     }
 }

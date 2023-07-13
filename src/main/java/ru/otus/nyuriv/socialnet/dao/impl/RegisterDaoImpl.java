@@ -2,6 +2,8 @@ package ru.otus.nyuriv.socialnet.dao.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,10 @@ public class RegisterDaoImpl implements RegisterDao {
 
     @Override
     public UserProfiles createUserAndProfile(RegistrationModel registrationModel) {
-        AtomicReference<UserProfiles> result = new AtomicReference<>();
+        UserProfiles result = null;
         try (Connection conn = dataSource.getConnection()) {
             DSLContext dsl = DSL.using(conn, SQLDialect.MYSQL);
-            dsl.transaction(conf -> {
+            result = dsl.transactionResult(conf -> {
                 DSLContext ctx = DSL.using(conf);
                 int count = ctx.insertInto(USERS)
                         .set(USERS.ID, registrationModel.getId())
@@ -41,20 +43,24 @@ public class RegisterDaoImpl implements RegisterDao {
                 if (count != 1) {
                     throw new IllegalStateException("User not created");
                 }
-                UserProfiles profile = ctx.insertInto(PROFILES)
+                count = ctx.insertInto(PROFILES)
                         .set(PROFILES.ID, registrationModel.getId())
                         .set(PROFILES.FIRST_NAME, registrationModel.getFirstName())
                         .set(PROFILES.SECOND_NAME, registrationModel.getSecondName())
                         .set(PROFILES.BIRTHDATE, registrationModel.getBirthdate())
                         .set(PROFILES.BIOGRAPHY, registrationModel.getBiography())
                         .set(PROFILES.CITY, registrationModel.getCity())
-                        .returning()
+                        .execute();
+                if (count != 1) {
+                    throw new IllegalStateException("Profile not created");
+                }
+                return ctx.selectFrom(PROFILES)
+                        .where(PROFILES.ID.eq(registrationModel.getId()))
                         .fetchOneInto(UserProfiles.class);
-                result.set(profile);
             });
         } catch (Exception e) {
             log.error("User creation failed, model: {}", registrationModel, e);
         }
-        return result.get();
+        return result;
     }
 }
