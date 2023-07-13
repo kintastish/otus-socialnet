@@ -4,10 +4,11 @@
 
 Для сборки и развертывания проекта используется docker-compose.
 Запуск командой (из каталога с файлом docker-compose.yml). 
-После появления в логе сообщения вида `Started SocialNetApp in 5.026 seconds (JVM running for 5.826)`
-приложение готово к работе.
 
 `docker-compose up`
+
+После появления в логе сообщения вида `Started SocialNetApp in 5.026 seconds (JVM running for 5.826)`
+приложение готово к работе.
 
 #### Структура каталога
 - src - исходный код
