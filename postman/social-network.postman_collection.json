@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "7ff4b990-3a3d-475d-886e-52cf1a84b8a3",
+		"name": "social-network",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "7730983"
+	},
+	"item": [
+		{
+			"name": "Получение анкеты пользователя",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": "http://localhost:8080/api/user/get/4b7c12ea-460c-4c75-97a8-123188f3ff7d"
+			},
+			"response": []
+		},
+		{
+			"name": "Регистрация нового пользователя",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"first_name\": \"1\",\n  \"second_name\": \"2\",\n  \"birthdate\": \"2017-02-01\",\n  \"biography\": \"Хобби, интересы и т.п.\",\n  \"city\": \"Москва\",\n  \"password\": \"*****\"\n}"
+				},
+				"url": "http://localhost:8080/api/user/register"
+			},
+			"response": []
+		},
+		{
+			"name": "Аутентификация",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"4b7c12ea-460c-4c75-97a8-123188f3ff7d\",\n  \"password\": \"*****\"\n}"
+				},
+				"url": "http://localhost:8080/api/login"
+			},
+			"response": []
+		}
+	]
+}
