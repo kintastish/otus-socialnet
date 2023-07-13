@@ -16,12 +16,15 @@ services:
     volumes:
       - ./db/migration:/flyway/sql
     depends_on:
-      - mysql-host
+      mysql-host:
+        condition: service_healthy
   app:
     build:
       dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
     depends_on:
-      - mysql-host
+      - flyway
 
 
 volumes:
