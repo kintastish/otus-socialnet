@@ -1,7 +1,7 @@
-USE socialnetdb;
+USE `socialnetdb`;
 
-create table users
+create table `users`
 (
-    id       varchar(50)  not null,
-    pwd_hash text not null
+    `id`       varchar(50)  not null,
+    `pwd_hash` text not null
 );
