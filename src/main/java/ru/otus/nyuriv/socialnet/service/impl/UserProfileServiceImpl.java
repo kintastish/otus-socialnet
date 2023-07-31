@@ -10,6 +10,10 @@ import ru.otus.nyuriv.socialnet.model.UserProfileResponse;
 import ru.otus.nyuriv.socialnet.service.UserProfileService;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static ru.otus.nyuriv.socialnet.util.ValidationUtil.checkNotEmpty;
 
 @Service
 @Slf4j
@@ -28,6 +32,22 @@ public class UserProfileServiceImpl implements UserProfileService {
             throw new NotFoundException("User with id " + userId + " not found");
         }
         return convert(profile);
+    }
+
+    @Override
+    public List<UserProfileResponse> findProfiles(String firstName, String lastName) {
+        checkNotEmpty(firstName, "firstName");
+        checkNotEmpty(lastName, "lastName");
+        List<UserProfiles> profiles = dao.findProfiles(firstName, lastName);
+        if (profiles == null) {
+            throw new RuntimeException("Error during profiles search");
+        }
+        if (profiles.isEmpty()) {
+            throw new NotFoundException("No profiles found");
+        }
+        return profiles.stream()
+                .map(this::convert)
+                .collect(Collectors.toList());
     }
 
     private UserProfileResponse convert(UserProfiles profile) {

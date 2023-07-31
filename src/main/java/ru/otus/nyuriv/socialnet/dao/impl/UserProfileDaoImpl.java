@@ -12,6 +12,7 @@ import ru.otus.nyuriv.socialnet.gen.jooq.socialnetdb.tables.pojos.UserProfiles;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -36,5 +37,20 @@ public class UserProfileDaoImpl implements UserProfileDao {
             log.error("Getting user profile error, userId: {}", userId, e);
         }
         return profile;
+    }
+
+    @Override
+    public List<UserProfiles> findProfiles(String firstName, String lastName) {
+        List<UserProfiles> profiles = null;
+        try (Connection conn = dataSource.getConnection()) {
+            DSLContext ctx = DSL.using(conn, SQLDialect.MYSQL);
+            profiles = ctx.selectFrom(PROFILES)
+                    .where(PROFILES.FIRST_NAME.like(firstName + "%")
+                            .and(PROFILES.SECOND_NAME.like(lastName + "%")))
+                    .fetchInto(UserProfiles.class);
+        } catch (Exception e) {
+            log.error("Finding user profiles error", e);
+        }
+        return profiles;
     }
 }

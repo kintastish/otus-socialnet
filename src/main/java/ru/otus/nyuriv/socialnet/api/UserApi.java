@@ -8,6 +8,8 @@ import ru.otus.nyuriv.socialnet.model.UserRegistrationResponse;
 import ru.otus.nyuriv.socialnet.service.RegisteringService;
 import ru.otus.nyuriv.socialnet.service.UserProfileService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("user")
 public class UserApi {
@@ -28,5 +30,11 @@ public class UserApi {
     @GetMapping("get/{id}")
     public UserProfileResponse getUserProfile(@PathVariable("id") String id) {
         return userProfileService.getUserProfile(id);
+    }
+
+    @GetMapping("search")
+    public List<UserProfileResponse> search(@RequestParam("first_name") String firstName,
+                                            @RequestParam("last_name") String lastName) {
+        return userProfileService.findProfiles(firstName, lastName);
     }
 }
