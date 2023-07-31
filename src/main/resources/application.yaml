@@ -14,3 +14,8 @@ spring:
 settings:
   secret-key: '1231231'
   session-lifetime-minutes: 360
+
+logging:
+  level:
+    ru.otus: debug
+    org.jooq.tools.LoggerListener: debug
