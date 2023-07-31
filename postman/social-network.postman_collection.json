@@ -65,6 +65,43 @@
 				"url": "http://localhost:8080/api/login"
 			},
 			"response": []
+		},
+		{
+			"name": "Поиск анкет",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/user/search?first_name=Яш&last_name=Али",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"search"
+					],
+					"query": [
+						{
+							"key": "first_name",
+							"value": "Яш"
+						},
+						{
+							"key": "last_name",
+							"value": "Али"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
